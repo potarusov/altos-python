@@ -7,8 +7,8 @@ import config
 class Driver:
     def __init__(self, train):
         self.train = train
-        self.move_forward = False
-        self.move_backward = False
+        self.moving_forward = True
+        self.moving_backward = False
         self.stop = False
         self.obstacle_ahead = False
 
@@ -32,15 +32,34 @@ class Driver:
                 btrc_frame = self.train.can.get_btrc_frame()
                 btrc_command = btrc_frame.get_btrc_command()
                 if btrc_command:
-                    if btrc_command == 'green': # Forward
-                        print("Forward")
-                        self.train.velocity = config.min_velocity
-                        self.train.move_forward(0.0)
-                        self.move_forward = True
-                    elif btrc_command == 'red':
+                    if btrc_command == 'accelerate': # Forward
+                        print("Accelerate")
+                        if self.moving_forward:
+                            self.train.move_forward(config.velocity_step)
+                        elif self.moving_backward:
+                            self.train.move_backward(config.velocity_step)
+                    elif btrc_command == 'decelerate':
+                        print("Decelerate")
+                        if self.moving_forward:
+                            self.train.move_forward(-config.velocity_step)
+                        elif self.moving_backward:
+                            self.train.move_backward(-config.velocity_step)
+                    elif btrc_command == 'direction':
+                        print("Change Direction")
+                        if self.moving_forward:
+                            self.moving_forward = False
+                            self.moving_backward = True
+                            self.train.stop()
+                            self.train.move_backward(0.0)
+                        elif self.moving_backward:
+                            self.moving_backward = False
+                            self.moving_forward = True
+                            self.train.stop()
+                            self.train.move_forward(0.0)
+                    elif btrc_command == 'stop':
                         print("Stop")
                         self.train.stop()
-                    elif btrc_command == 'yellow':
+                    elif btrc_command == 'shutdown':
                         print("Shutdown")
                         self.train.shutdown()
                         config.exit = 1

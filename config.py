@@ -5,6 +5,7 @@ pin_A = "P9_16"
 pin_B = "P9_14"
 min_velocity = 75.0
 max_velocity = 100.0
+velocity_step = 5
 
 """ Sensors """
 # Bluetooth
