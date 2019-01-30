@@ -8,8 +8,6 @@ class Ultrasonic:
     def __init__(self, thread_name, pin_trigger, pin_echo, can):
         self.thread_name = thread_name
         self.process = Process(target=self.run, args=(can,))
-        #self.thread.daemon = True
-        self._sentinel = object()
 
         self.timestamp = 0
 
@@ -17,7 +15,7 @@ class Ultrasonic:
         self.pin_echo = pin_echo
         self.distance = 0.0
 
-        self.reverse_delay = 0.00001
+        self.delay = 0.00001
 
         GPIO.setup(self.pin_trigger, GPIO.OUT)
         GPIO.setup(self.pin_echo, GPIO.IN)
@@ -27,18 +25,13 @@ class Ultrasonic:
 
     def run(self, can):
         while True:
-            #btrc_frame = can.get_btrc_frame()
-            #btrc_command = btrc_frame.get_btrc_command()
-            #if btrc_command == "Exit":
-            #    break
             if config.exit:
                 break
             new_reading = False
             counter = 0
             GPIO.output(self.pin_trigger, GPIO.HIGH)
-            time.sleep(self.reverse_delay)
+            time.sleep(self.delay)
             GPIO.output(self.pin_trigger, GPIO.LOW)
-            #time.sleep(self.reverse_delay)
 
             while not GPIO.input(self.pin_echo):
                 counter += 1

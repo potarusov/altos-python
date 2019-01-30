@@ -4,7 +4,7 @@ import config
 
 from Train.sensors.bluetooth_server import Bluetooth
 from Train.sensors.ultrasonic import Ultrasonic
-# from Train.sensors.RFID_reader import RFID_reader
+from Train.sensors.RFID_reader import RFID_reader
 from Train.can import CAN
 from Train.actuators.simple_dc_motor import SimpleDCMotor
 
@@ -20,6 +20,8 @@ class Train:
 
         """ Sensors """
         self.ultrasonic = Ultrasonic("Ultrasonic", config.pin_trigger, config.pin_echo, self.can)
+
+        self.RFID_reader = RFID_reader("RFID reader", self.can)
 
         self.bluetooth = Bluetooth('Remote Control', self.can)
 
@@ -55,7 +57,13 @@ class Train:
 
     def shutdown(self):
         self.motor.stop()
+        self.motor.cleanup()
+        self.ultrasonic.process.terminate()
+        self.RFID_reader.process.terminate()
         self.bluetooth.close_bluetooth_socket()
+        self.bluetooth.process.terminate()
+
+
 
 
 

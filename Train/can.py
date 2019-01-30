@@ -1,5 +1,5 @@
 """ Controller Area Network """
-from multiprocessing import Queue, JoinableQueue
+from multiprocessing import JoinableQueue
 
 # Ultrasonic Range Finder CAN Frame
 class RangeCANFrame:
@@ -9,6 +9,17 @@ class RangeCANFrame:
 
     def get_distance(self):
         return self.distance
+
+    def get_timestamp(self):
+        return self.timestamp
+
+class RFIDCANFrame:
+    def __init__(self, RFID, timestamp):
+        self.RFID = RFID
+        self.timestamp = timestamp
+
+    def get_RFID(self):
+        return self.RFID
 
     def get_timestamp(self):
         return self.timestamp
@@ -31,17 +42,19 @@ class CAN:
         # Distance Buffer
         self.distance_buffer = JoinableQueue()
 
+        # RFID Buffer
+        self.RFID_buffer = JoinableQueue()
+
         # Bluetooth Remote Control Command Buffer
         self.btrc_buffer = JoinableQueue()
 
     def update_distance_buffer(self, distance_to_obstacle, timestamp):
-        #if not self.distance_buffer.empty():
-        #    self.distance_buffer.get()
         self.distance_buffer.put(RangeCANFrame(distance_to_obstacle, timestamp))
 
+    def update_RFID_buffer(self, RFID, timestamp):
+        self.RFID_buffer.put(RFIDCANFrame(RFID, timestamp))
+
     def update_btrc_buffer(self, btrc_command, timestamp):
-        #if not self.btrc_buffer.empty():
-        #    self.btrc_buffer.get()
         self.btrc_buffer.put(BluetoothRemoteControlCANFrame(btrc_command, timestamp))
 
     def get_range_frame(self):
@@ -49,6 +62,12 @@ class CAN:
             return self.distance_buffer.get_nowait()
         else:
             return RangeCANFrame(150.0, 0)
+
+    def get_RFID_frame(self):
+        if not self.RFID_buffer.empty():
+            return self.RFID_buffer.get_nowait()
+        else:
+            return RFIDCANFrame("NaN", 0)
 
     def get_btrc_frame(self):
         if not self.btrc_buffer.empty():
