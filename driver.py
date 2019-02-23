@@ -17,13 +17,13 @@ class Driver:
             if sys.platform.startswith('linux2'):
                 range_frame = self.train.can.get_range_frame()
                 distance_2_obstacle = range_frame.get_distance()
-                if distance_2_obstacle > 0.0 and distance_2_obstacle < 15.0 and not self.obstacle_ahead\
-                        and not self.stop:
+                if (distance_2_obstacle > 0.0 and distance_2_obstacle < 15.0 and not self.obstacle_ahead\
+                        and not self.stop):
                     print("Obstacle ahead!")
                     self.train.stop()
                     self.obstacle_ahead = True
                     self.stop = True
-                elif distance_2_obstacle > 15.0 and self.obstacle_ahead and self.stop:
+                elif (distance_2_obstacle > 15.0 and self.obstacle_ahead and self.stop):
                     self.obstacle_ahead = False
                     if self.moving_forward:
                         self.train.move_forward(0.0)

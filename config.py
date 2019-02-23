@@ -1,5 +1,6 @@
 
 """ Train """
+delay = 0.001
 """ Motor """
 pin_A = "P9_16"
 pin_B = "P9_14"
@@ -15,11 +16,15 @@ android_application_name = "PerkyBlue"
 # Ultrasonic
 pin_trigger = "P9_15"
 pin_echo = "P9_12"
+log_distance = True
 
 """ Controller Area Network """
 
 initial_position = [0, 0]
 exit = 0
+
+""" Kalman Filter """
+k_stab = 0.03
 
 """ Environment """
 map = "map.json"

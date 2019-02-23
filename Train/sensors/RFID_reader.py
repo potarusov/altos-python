@@ -5,15 +5,16 @@ from multiprocessing import Process
 import serial
 import Adafruit_BBIO.UART as UART
 UART.setup("UART2")
+import config
 
 # RFID reader ID-20LA
 class RFID_reader:
     def __init__(self, thread_name, can):
         self.thread_name = thread_name
         self.port = serial.Serial("/dev/ttyO2", 9600)
-        self.process = Process(target=self.run, args=(can,))
         print(self.port.name)
-        self.delay = 0.1
+        self.process = Process(target=self.run, args=(can,))
+        self.delay = config.delay
         self.process.start()
     def run(self, can):
         while True:
@@ -28,6 +29,7 @@ class RFID_reader:
                     #  next byte time to arrive:
                     data += self.port.readline()
                     time.sleep(self.delay)
+
                     # Print what was sent:
                     print "RFID Data Received:\n '%s'" % data
 

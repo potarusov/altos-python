@@ -13,6 +13,7 @@ class RangeCANFrame:
     def get_timestamp(self):
         return self.timestamp
 
+# RFID Reader CAN Frame
 class RFIDCANFrame:
     def __init__(self, RFID, timestamp):
         self.RFID = RFID
@@ -41,6 +42,7 @@ class CAN:
     def __init__(self):
         # Distance Buffer
         self.distance_buffer = JoinableQueue()
+        self.last_received_range_frame = RangeCANFrame(0, 0)
 
         # RFID Buffer
         self.RFID_buffer = JoinableQueue()
@@ -59,9 +61,8 @@ class CAN:
 
     def get_range_frame(self):
         if not self.distance_buffer.empty():
-            return self.distance_buffer.get_nowait()
-        else:
-            return RangeCANFrame(150.0, 0)
+            self.last_received_range_frame = self.distance_buffer.get_nowait()
+        return self.last_received_range_frame
 
     def get_RFID_frame(self):
         if not self.RFID_buffer.empty():

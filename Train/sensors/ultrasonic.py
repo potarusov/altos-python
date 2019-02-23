@@ -1,8 +1,10 @@
 #
+import csv
 import time
 from multiprocessing import Process
 import Adafruit_BBIO.GPIO as GPIO
 import config
+from Train.sensors.kalman_filter import KalmanFilter
 
 class Ultrasonic:
     def __init__(self, thread_name, pin_trigger, pin_echo, can):
@@ -15,7 +17,11 @@ class Ultrasonic:
         self.pin_echo = pin_echo
         self.distance = 0.0
 
-        self.delay = 0.00001
+        self.delay = config.delay
+
+        self.start = True
+
+        self.kf = KalmanFilter(config.k_stab, 0)
 
         GPIO.setup(self.pin_trigger, GPIO.OUT)
         GPIO.setup(self.pin_echo, GPIO.IN)
@@ -59,8 +65,20 @@ class Ultrasonic:
             # That was the distance there and back so halve the value
             self.distance = self.distance / 2
 
+            if self.start:
+                self.kf.set_x_opt(self.distance)
+                self.start = False
+
+            self.distance = self.kf.callback(self.distance)
+
             can.update_distance_buffer(self.distance, pulse_end)
-            self.print_distance()
+
+            # with open('ultrasonic_distance.csv', 'a') as file_2_write:
+            #     write_2_file = csv.writer(file_2_write)
+            #     row = [self.distance]
+            #     write_2_file.writerow(row)
+            if config.log_distance:
+                self.print_distance()
 
     def print_distance(self):
         print("Distance : %.1f" % self.distance)

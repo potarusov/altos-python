@@ -3,6 +3,7 @@ __author__ = 'POTABONNIER'
 import time
 import Adafruit_BBIO.GPIO as GPIO
 import Adafruit_BBIO.PWM as PWM
+import config
 
 class SimpleDCMotor:
     def __init__(self, pin_forward, pin_backward):
@@ -11,7 +12,7 @@ class SimpleDCMotor:
 
         self.pin_forward = pin_forward
         self.pin_backward = pin_backward
-        self.reverse_delay = 0.1
+        self.reverse_delay = config.delay
 
         GPIO.setup(self.pin_forward, GPIO.OUT)
         GPIO.setup(self.pin_backward, GPIO.OUT)

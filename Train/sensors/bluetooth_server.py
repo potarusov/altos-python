@@ -9,7 +9,6 @@ class Bluetooth:
     def __init__(self, thread_name, can):
         self.thread_name = thread_name
         self.process = Process(target=self.run, args=(can,))
-        #self.thread.daemon = True
 
         """ Initialize a bluetooth sezrver on the BeagleBone """
         self.server_socket = BluetoothSocket(RFCOMM)

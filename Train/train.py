@@ -59,9 +59,12 @@ class Train:
         self.motor.stop()
         self.motor.cleanup()
         self.ultrasonic.process.terminate()
+        self.ultrasonic.process.join()
         self.RFID_reader.process.terminate()
+        self.RFID_reader.process.join()
         self.bluetooth.close_bluetooth_socket()
         self.bluetooth.process.terminate()
+        self.bluetooth.process.join()
 
 
 

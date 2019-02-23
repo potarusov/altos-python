@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ATOS.iml" filepath="$PROJECT_DIR$/.idea/ATOS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/altos-python.iml" filepath="$PROJECT_DIR$/.idea/altos-python.iml" />
     </modules>
   </component>
 </project>
