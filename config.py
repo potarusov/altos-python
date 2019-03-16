@@ -16,7 +16,7 @@ android_application_name = "PerkyBlue"
 # Ultrasonic
 pin_trigger = "P9_15"
 pin_echo = "P9_12"
-log_distance = True
+log_distance = False
 
 """ Controller Area Network """
 
