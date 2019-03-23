@@ -75,9 +75,3 @@ class CAN:
             return self.btrc_buffer.get_nowait()
         else:
             return BluetoothRemoteControlCANFrame("None", 0)
-
-
-
-
-
-

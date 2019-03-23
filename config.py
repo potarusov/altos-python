@@ -1,3 +1,7 @@
+exit = 0
+
+""" Environment """
+map = "Environment//map//network.yaml"
 
 """ Train """
 delay = 0.001
@@ -18,13 +22,12 @@ pin_trigger = "P9_15"
 pin_echo = "P9_12"
 log_distance = False
 
-""" Controller Area Network """
-
-initial_position = [0, 0]
-exit = 0
-
 """ Kalman Filter """
 k_stab = 0.03
 
-""" Environment """
-map = "map.json"
+""" Decision Making """
+initial_position = [0, 0]
+min_safe_distance_2_obstacle = 15
+
+""" Acting """
+step = 5

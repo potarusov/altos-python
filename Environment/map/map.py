@@ -19,4 +19,3 @@ class Map:
             self.adjacency_list.append(edge)
         print(self.adjacency_list)
 
-map = Map('network.yaml')

@@ -1,4 +1,7 @@
 nodes:
+  - label: 0
+    type: 'station'
+    RFID: ''
   - label: 1
     type: 'curve'
     RFID: '5700B0DB0A36'
@@ -29,15 +32,20 @@ nodes:
   - label: 10
     type: 'straight_line'
     RFID: '57008BD7F7FC'
-
+  - label: 11
+    type: 'station'
+    RFID: ''
 edges:
+  - label: 0
+    children:
+      - label: 3
   - label: 1
     children:
       - label: 5
       - label: 8
   - label: 2
     children:
-      - label: 3
+      - label: 0
   - label: 3
     children:
       - label: 1
@@ -55,7 +63,7 @@ edges:
       - label: 10
   - label: 8
     children:
-      - label: 7
+      - label: 11
   - label: 9
     children:
       - label: 10
@@ -63,5 +71,8 @@ edges:
     children:
       - label: 6
       - label: 2
+  - label: 11
+    children:
+      - label: 7
 
 misc:

@@ -27,14 +27,12 @@ class RFID_reader:
                     # to catch them all, so add received byte to our
                     # data string and delay a little to give the
                     #  next byte time to arrive:
-                    data += self.port.readline()
+                    data = self.port.readline()
                     time.sleep(self.delay)
 
                     # Print what was sent:
-                    print "RFID Data Received:\n '%s'" % data
+                    # print "RFID Data Received:\n '%s'" % data
+                    print(data)
 
                     timestamp = time.time()
                     can.update_RFID_buffer(data, timestamp)
-
-
-
