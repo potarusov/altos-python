@@ -46,7 +46,7 @@ class DecisionMaking:
 
     def run(self, position, distance_2_obstacle, btrc_command, keyboard_input):
         self.decision = "NO"
-        if self.state == "MOVING_FORWARD" and self.is_obstacle_ahead(distance_2_obstacle):
+        if self.state == "MOVING FORWARD" and self.is_obstacle_ahead(distance_2_obstacle):
             self.state = "OBSTACLE AHEAD"
             self.decision = "TO STOP"
         elif self.state == "OBSTACLE AHEAD" and not self.is_obstacle_ahead(distance_2_obstacle):
@@ -54,6 +54,7 @@ class DecisionMaking:
             self.decision = "TO MOVE FORWARD"
 
         if btrc_command == 'accelerate':
+            self.state = "MOVING FORWARD"
             self.decision = "ACCELERATE"
         elif btrc_command == 'decelerate':
             self.decision = "DECELERATE"
