@@ -1,7 +1,7 @@
 nodes:
   - label: 0
     type: 'station'
-    RFID: ''
+    RFID: '65002757C9DC'
   - label: 1
     type: 'curve'
     RFID: '5700B0DB0A36'
@@ -34,7 +34,7 @@ nodes:
     RFID: '57008BD7F7FC'
   - label: 11
     type: 'station'
-    RFID: ''
+    RFID: '030019DA78B8'
 edges:
   - label: 0
     children:

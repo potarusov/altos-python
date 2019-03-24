@@ -49,6 +49,6 @@ class DijkstraPlanner:
             path.append(node.id)
             node = self.graph[node.parent]
 
-        path.append(node.id)
+        #path.append(node.id)
         print(path)
         return path

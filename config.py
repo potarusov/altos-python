@@ -20,14 +20,15 @@ android_application_name = "PerkyBlue"
 # Ultrasonic
 pin_trigger = "P9_15"
 pin_echo = "P9_12"
-log_distance = True
+log_distance = False
 
 """ Kalman Filter """
 k_stab = 0.03
 
 """ Decision Making """
-initial_position = [0, 0]
+initial_position = 0
 min_safe_distance_2_obstacle = 15
+time_2_switch = 10
 
 """ Acting """
 step = 5

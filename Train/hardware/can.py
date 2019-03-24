@@ -68,7 +68,7 @@ class CAN:
         if not self.RFID_buffer.empty():
             return self.RFID_buffer.get_nowait()
         else:
-            return RFIDCANFrame("NaN", 0)
+            return RFIDCANFrame("NaRFID", 0)
 
     def get_btrc_frame(self):
         if not self.btrc_buffer.empty():

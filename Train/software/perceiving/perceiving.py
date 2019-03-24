@@ -4,7 +4,7 @@ from Train.software.perceiving.kalman_filter import KalmanFilter
 
 class Perceiving:
     def __init__(self, can, initial_position):
-        #self.map = Map(config.map)
+        self.map = Map(config.map)
         self.can = can
         self.most_recent_position = initial_position
         self.kf = KalmanFilter(config.k_stab, 0)
@@ -22,11 +22,12 @@ class Perceiving:
 
         position = self.most_recent_position
 
-        for node in self.map.nodes:
-            if RFID == node['RFID']:
-                position = node['label']
-                self.most_recent_position = position
-                break
+        if RFID != "NaRFID":
+            for node in self.map.nodes:
+                if RFID[2:14] == node['RFID']:
+                    position = int(node['label'])
+                    print("Position on track : %d" % position)
+                    break
 
         return position
 
@@ -47,5 +48,6 @@ class Perceiving:
     def run(self):
         distance_2_obstacle = self.get_distance()
         btrc_command = self.get_btrc_command()
+        self.most_recent_position = self.get_position()
 
         return self.most_recent_position, distance_2_obstacle, btrc_command
