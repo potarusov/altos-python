@@ -2,6 +2,7 @@
 import config
 
 from Train.hardware.can import CAN
+from Train.hardware.sensors.wifi_client import WiFi
 from Train.hardware.sensors.bluetooth_server import Bluetooth
 from Train.hardware.sensors.ultrasonic import Ultrasonic
 from Train.hardware.sensors.RFID_reader import RFID_reader
@@ -23,12 +24,15 @@ class Train:
 
         self.bluetooth = Bluetooth('Remote Control', self.can)
 
+        if config.WiFi_cc_ON:
+            self.wifi_client = WiFi("Control Centre", self.can)
+
         """ Actuators """
         self.motor = SimpleDCMotor(config.pin_A, config.pin_B)
 
         """ Systems/modules """
         self.ps = Perceiving(self.can, config.initial_position)
-        self.dms = DecisionMaking(self.ps)
+        self.dms = DecisionMaking(self.can)
         self.acts = Acting(self.motor)
 
     def shutdown(self):
@@ -39,11 +43,10 @@ class Train:
         self.bluetooth.close_bluetooth_socket()
         self.bluetooth.process.terminate()
         self.bluetooth.process.join()
-
-
-
-
-
-
-
-
+        if config.WiFi_cc_ON:
+            self.wifi_client.close_TCP_socket()
+            print("Socket is closed")
+            self.wifi_client.process.terminate()
+            print("After terminating the process")
+            self.wifi_client.process.join(1.0)
+            print("After joining the process")

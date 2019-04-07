@@ -45,9 +45,14 @@ class Perceiving:
         btrc_frame = self.can.get_btrc_frame()
         return btrc_frame.get_btrc_command()
 
+    def get_message_from_control_center(self):
+        message_from_cc = self.can.get_wfcc_frame()
+        return message_from_cc.get_wfcc_message()
+
     def run(self):
+        self.most_recent_position = self.get_position()
         distance_2_obstacle = self.get_distance()
         btrc_command = self.get_btrc_command()
-        self.most_recent_position = self.get_position()
+        message_from_cc = self.get_message_from_control_center()
 
-        return self.most_recent_position, distance_2_obstacle, btrc_command
+        return self.most_recent_position, distance_2_obstacle, btrc_command, message_from_cc

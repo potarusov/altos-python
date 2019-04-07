@@ -1,21 +1,23 @@
 import time
 import config
 from Environment.map.map import Map
+from Train.hardware.can import WiFiTrainStateCANFrame
 from Train.software.decision_making.planning.mission.dijkstra import DijkstraPlanner
 
 class DecisionMaking:
-    def __init__(self, ps):
+    def __init__(self, can):
         self.most_recent_position = config.initial_position
+        self.can = can
 
         self.map = Map(config.map)
         self.mission_planner = DijkstraPlanner(self.map.adjacency_list)
         self.path = []
 
-        self.modes = ["MANUAL", "DRIVERLESS"]
+        self.modes = ["UNKNOWN", "MANUAL", "DRIVERLESS"]
         self.mode = "MANUAL"
 
-        self.states = ["READY", "MOVING FORWARD", "MOVING BACKWARD", "ARRIVING AT STOP", "AT STOP", "OBSTACLE AHEAD", "STOPPED",
-                       "SHUT DOWN"]
+        self.states = ["UNKNOWN", "READY", "MOVING FORWARD", "MOVING BACKWARD", "ARRIVING AT STOP", "AT STOP",
+                       "OBSTACLE AHEAD", "STOPPED", "SHUT DOWN"]
         self.state = "READY"
 
         self.decisions = ["NO", "TO ACCELERATE", "TO DECELERATE", "TO MOVE FORWARD", "TO MOVE BACKWARD", "TO CHANGE DIRECTION",
@@ -50,7 +52,9 @@ class DecisionMaking:
             return True
         return False
 
-    def run(self, position, distance_2_obstacle, btrc_command, keyboard_input):
+    def run(self, position, distance_2_obstacle, btrc_command, message_from_cc):
+        self.message_from_cc = message_from_cc
+        # print(self.message_from_cc)
         self.decision = "NO"
         if self.mode == "MANUAL":
             if self.state == "MOVING FORWARD" and self.is_obstacle_ahead(distance_2_obstacle):
@@ -119,4 +123,8 @@ class DecisionMaking:
                     self.state = "READY"
                     self.decision = "TO STOP"
                 self.update_path(self.most_recent_position)
+
+        timestamp = time.time()
+        self.can.update_wfts_buffer(self.most_recent_position, self.mode, self.state, self.decision, timestamp)
+
         return self.decision

@@ -3,6 +3,9 @@ exit = 0
 """ Environment """
 map = "Environment//map//network.yaml"
 
+""" WiFi Control Center """
+WiFi_cc_ON = True
+
 """ Train """
 delay = 0.001
 """ Motor """
@@ -13,6 +16,10 @@ max_velocity = 100.0
 velocity_step = 5
 
 """ Sensors """
+# Wi-Fi
+server_ip = '192.168.1.32'
+server_port_number = 5001
+
 # Bluetooth
 service_uuid = "00001101-0000-1000-8000-00805F9B34FB"
 android_application_name = "PerkyBlue"
