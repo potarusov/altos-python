@@ -53,6 +53,9 @@ class Perceiving:
         self.most_recent_position = self.get_position()
         distance_2_obstacle = self.get_distance()
         btrc_command = self.get_btrc_command()
-        message_from_cc = self.get_message_from_control_center()
+        if config.WiFi_cc_ON:
+            message_from_cc = self.get_message_from_control_center()
+        else:
+            message_from_cc = "CCisOFF"
 
         return self.most_recent_position, distance_2_obstacle, btrc_command, message_from_cc

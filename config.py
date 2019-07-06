@@ -4,7 +4,7 @@ exit = 0
 map = "Environment//map//network.yaml"
 
 """ WiFi Control Center """
-WiFi_cc_ON = True
+WiFi_cc_ON = False
 
 """ Train """
 delay = 0.001

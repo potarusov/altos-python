@@ -37,9 +37,10 @@ class Acting:
         self.motor.cleanup()
 
     def run(self, decision):
-        if decision == "ACCELERATE":
+        if decision == "TO ACCELERATE":
+            print("Decision to accelerate")
             self.move_forward(config.step)
-        elif decision == "DECELERATE":
+        elif decision == "TO DECELERATE":
             self.move_forward(-config.step)
         elif decision == "TO MOVE FORWARD":
             self.move_forward(0.0)

@@ -6,7 +6,6 @@ class WiFi:
     def __init__(self, thread_name, can):
         self.thread_name = thread_name
         self.process = Process(target=self.run, args=(can,))
-        self.process.daemon = True
 
         self.TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

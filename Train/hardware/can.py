@@ -77,18 +77,28 @@ class CAN:
         self.wfts_buffer = JoinableQueue(100)
 
     def update_distance_buffer(self, distance_to_obstacle, timestamp):
+        if self.distance_buffer.full():
+            self.distance_buffer.get()
         self.distance_buffer.put(RangeCANFrame(distance_to_obstacle, timestamp))
 
     def update_RFID_buffer(self, RFID, timestamp):
+        if self.RFID_buffer.full():
+            self.RFID_buffer.get()
         self.RFID_buffer.put(RFIDCANFrame(RFID, timestamp))
 
     def update_btrc_buffer(self, btrc_command, timestamp):
+        if self.btrc_buffer.full():
+            self.btrc_buffer.get()
         self.btrc_buffer.put(BluetoothRemoteControlCANFrame(btrc_command, timestamp))
 
     def update_wfcc_buffer(self, wfcc_message, timestamp):
+        if self.wfcc_buffer.full():
+            self.wfcc_buffer.get()
         self.wfcc_buffer.put(WiFiControlCenterCANFrame(wfcc_message, timestamp))
 
     def update_wfts_buffer(self, most_recent_position, mode, state, decision, timestamp):
+        if self.wfts_buffer.full():
+            self.wfts_buffer.get()
         self.wfts_buffer.put(WiFiTrainStateCANFrame(most_recent_position, mode, state, decision, timestamp))
 
     def get_range_frame(self):

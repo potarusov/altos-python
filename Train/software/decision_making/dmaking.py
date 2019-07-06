@@ -1,8 +1,9 @@
 import time
 import config
 from Environment.map.map import Map
-from Train.hardware.can import WiFiTrainStateCANFrame
 from Train.software.decision_making.planning.mission.dijkstra import DijkstraPlanner
+from Train.software.decision_making.planning.state_machine import Stopped
+from Train.software.decision_making.planning.state_machine import MFSM
 
 class DecisionMaking:
     def __init__(self, can):
@@ -16,13 +17,16 @@ class DecisionMaking:
         self.modes = ["UNKNOWN", "MANUAL", "DRIVERLESS"]
         self.mode = "MANUAL"
 
-        self.states = ["UNKNOWN", "READY", "MOVING FORWARD", "MOVING BACKWARD", "ARRIVING AT STOP", "AT STOP",
-                       "OBSTACLE AHEAD", "STOPPED", "SHUT DOWN"]
-        self.state = "READY"
+        self.man_states = ["MOVING FORWARD", "MOVING BACKWARD", "OBSTACLE AHEAD", "STOPPED", "SHUT DOWN"]
 
-        self.decisions = ["NO", "TO ACCELERATE", "TO DECELERATE", "TO MOVE FORWARD", "TO MOVE BACKWARD", "TO CHANGE DIRECTION",
-                          "TO STOP", "TO SHUT DOWN"]
+        self.auto_states = ["DRIVING", "ARRIVING AT STOP", "AT STOP", "AT TERMINUS", "OBSTACLE AHEAD", "SHUT DOWN"]
+
+        self.decisions = ["NO", "TO ACCELERATE", "TO DECELERATE", "TO MOVE FORWARD", "TO MOVE BACKWARD",
+                          "TO CHANGE DIRECTION", "TO STOP", "TO SHUT DOWN"]
         self.decision = "NO"
+
+        self.man_fsm = MFSM()
+        self.man_fsm.set_cur_state(Stopped(self.man_fsm))
 
     def plan(self, origin, destination):
         self.mission_planner.plan(origin)
@@ -47,16 +51,12 @@ class DecisionMaking:
             print("Path: ")
             print(self.path)
 
-    def is_obstacle_ahead(self, distance_2_obstacle):
-        if distance_2_obstacle > 0.0 and distance_2_obstacle < config.min_safe_distance_2_obstacle:
-            return True
-        return False
-
     def run(self, position, distance_2_obstacle, btrc_command, message_from_cc):
         self.message_from_cc = message_from_cc
-        # print(self.message_from_cc)
+        #print(self.message_from_cc)
         self.decision = "NO"
         if self.mode == "MANUAL":
+            """
             if self.state == "MOVING FORWARD" and self.is_obstacle_ahead(distance_2_obstacle):
                 self.state = "OBSTACLE AHEAD"
                 self.decision = "TO STOP"
@@ -81,6 +81,8 @@ class DecisionMaking:
                 self.state = "SHUT DOWN"
                 self.decision = "TO SHUT DOWN"
                 config.exit = 1
+            """
+            self.decision = self.man_fsm.update(distance_2_obstacle, btrc_command)
 
         elif self.mode == "DRIVERLESS":
             destination = 0
@@ -125,6 +127,6 @@ class DecisionMaking:
                 self.update_path(self.most_recent_position)
 
         timestamp = time.time()
-        self.can.update_wfts_buffer(self.most_recent_position, self.mode, self.state, self.decision, timestamp)
+        self.can.update_wfts_buffer(self.most_recent_position, self.mode, self.man_fsm.cur_state, self.decision, timestamp)
 
         return self.decision
