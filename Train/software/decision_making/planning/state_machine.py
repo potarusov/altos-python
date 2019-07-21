@@ -26,14 +26,19 @@ class MovingForward(BaseState):
     __metaclass__ = Singleton
     def __init__(self, fsm):
         self.fsm = fsm
-        self.decision = "TO MOVE FORWARD"
+        self.decision = ""
+        self.start = True
 
     def enter(self):
         print("Entering MovingForward state")
-        return self.decision
 
     def execute(self, distance_2_obstacle, btrc_command):
-        self.decision = "NO"
+        if self.start:
+            self.start = False
+            self.decision = "TO MOVE FORWARD"
+        else:
+            self.decision = ""
+
         if self.is_obstacle_ahead(distance_2_obstacle):
             self.fsm.change_state(ObstacleAhead(self.fsm))
 
@@ -58,14 +63,19 @@ class MovingBackward(BaseState):
     __metaclass__ = Singleton
     def __init__(self, fsm):
         self.fsm = fsm
-        self.decision = "TO MOVE BACKWARD"
+        self.decision = ""
+        self.start = True
 
     def enter(self):
         print("Entering MovingBackward state")
-        return self.decision
 
     def execute(self, distance_2_obstacle, btrc_command):
-        self.decision = "NO"
+        if self.start:
+            self.start = False
+            self.decision = "TO MOVE BACKWARD"
+        else:
+            self.decision = ""
+
         if self.is_obstacle_ahead(distance_2_obstacle):
             self.fsm.change_state(ObstacleAhead(self.fsm))
 
@@ -90,13 +100,19 @@ class ObstacleAhead(BaseState):
     __metaclass__ = Singleton
     def __init__(self, fsm):
         self.fsm = fsm
-        self.decision = "TO STOP"
+        self.decision = ""
+        self.start = True
 
     def enter(self):
         print("Entering ObstacleAhead state")
-        return self.decision
 
     def execute(self, distance_2_obstacle, btrc_command):
+        if self.start:
+            self.start = False
+            self.decision = "TO STOP"
+        else:
+            self.decision = ""
+
         if not self.is_obstacle_ahead(distance_2_obstacle):
             #prev_state = self.fsm.prev_state
             print(type(self.fsm.prev_state))
@@ -115,14 +131,18 @@ class Stopped(BaseState):
     __metaclass__ = Singleton
     def __init__(self, fsm):
         self.fsm = fsm
+        self.start = True
         self.decision = "TO STOP"
 
     def enter(self):
         print("Entering Stopped state")
-        return self.decision
 
     def execute(self, distance_2_obstacle, btrc_command):
-        self.decision = "NO"
+        if self.start:
+            self.start = False
+        else:
+            self.decision = ""
+
         if btrc_command == 'accelerate':
             self.decision = "TO ACCELERATE"
             self.fsm.change_state(MovingForward(self.fsm))

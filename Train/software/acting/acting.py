@@ -44,7 +44,7 @@ class Acting:
             self.move_forward(-config.step)
         elif decision == "TO MOVE FORWARD":
             self.move_forward(0.0)
-        elif decision == "TO MOVE FORWARD":
+        elif decision == "TO MOVE BACKWARD":
             self.move_backward(0.0)
         elif decision == "TO STOP":
             self.stop()
